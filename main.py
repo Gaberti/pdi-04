@@ -18,22 +18,21 @@ def main():
             print('Failed to open image. \n')
             sys.exit()
         
-        blur = cv2.medianBlur(img, 5)
-        #blur2 = cv2.GaussianBlur(blur, (5,5), 0)
         #img = img.astype(np.float32)/255
         
-        threshold = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 51, 2)
+        thr = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 51, 2)
+        blur = cv2.medianBlur(thr, 5)
+        #blur2 = cv2.GaussianBlur(blur, (5,5), 0)
         #ret, threshold2 = cv2.threshold(threshold, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
         kernel = np.ones((1,1), np.uint8)
         #sure_bg = cv2.dilate(threshold, kernel,iterations=1)
-        abertura = cv2.morphologyEx(threshold, cv2.MORPH_OPEN, kernel, iterations=3)
+        abertura = cv2.morphologyEx(blur, cv2.MORPH_OPEN, kernel, iterations=3)
         fechamento = cv2.morphologyEx(abertura, cv2.MORPH_CLOSE, kernel, iterations=3)
         #img3 = cv2.subtract(sure_bg, sure_fg)
-        sure_fg = cv2.erode(fechamento, kernel, iterations=3)
 
 
-        cv2.imwrite(f'test{nome}.png', blur)
+        cv2.imwrite(f'test{nome}.png', fechamento)
         
 
 if __name__ == '__main__':
