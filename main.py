@@ -18,21 +18,25 @@ def main():
             print('Failed to open image. \n')
             sys.exit()
         
-        #img = img.astype(np.float32)/255
+        blur = cv2.bilateralFilter(img, 11, 85, 101)
+
+        # CannyAccThresh = cv2.threshold(img ,0,255, cv2.THRESH_BINARY|cv2.THRESH_OTSU)
+
+        # CannyThresh = 0.1 * CannyAccThresh
         
-        thr = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 51, 2)
-        blur = cv2.medianBlur(thr, 5)
-        #blur2 = cv2.GaussianBlur(blur, (5,5), 0)
+        edges = cv2.Canny(blur, 75, 100)
+        
+        '''blur = cv2.bilateralFilter(img, 9, 75, 75)
+        thr = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 31, 2)
+        
         #ret, threshold2 = cv2.threshold(threshold, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
-        kernel = np.ones((1,1), np.uint8)
-        #sure_bg = cv2.dilate(threshold, kernel,iterations=1)
-        abertura = cv2.morphologyEx(blur, cv2.MORPH_OPEN, kernel, iterations=3)
-        fechamento = cv2.morphologyEx(abertura, cv2.MORPH_CLOSE, kernel, iterations=3)
-        #img3 = cv2.subtract(sure_bg, sure_fg)
+        kernel = np.ones((3,3), np.float32)
+        abertura = cv2.morphologyEx(thr, cv2.MORPH_OPEN, kernel, iterations=3)
+        fechamento = cv2.morphologyEx(abertura, cv2.MORPH_CLOSE, kernel, iterations=1)'''
 
 
-        cv2.imwrite(f'test{nome}.png', fechamento)
+        cv2.imwrite(f'test{nome}.png', edges)
         
 
 if __name__ == '__main__':
